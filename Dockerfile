@@ -16,7 +16,7 @@ RUN adduser -D -u 1000 node
 # Allow Ember to write output to nginx html directory
 RUN chown -R node /usr/html/
 
-ONBUILD ARG ENVIRONMENT
+ONBUILD ARG ENVIRONMENT=production
 WORKDIR /src
 ONBUILD COPY . /src
 ONBUILD RUN sh /setup.sh
