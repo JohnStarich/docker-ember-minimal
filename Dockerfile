@@ -1,23 +1,42 @@
-FROM smebberson/alpine-nginx-nodejs:4.2.2
-MAINTAINER John Starich <john.starich@thirdship.com>
+FROM alpine:3.4
 
 # Install and update certificates
-RUN apk --update upgrade && apk add --no-cache curl ca-certificates && update-ca-certificates
+RUN apk add --no-cache \
+        ca-certificates \
+        curl \
+        g++ \
+        git \
+        libstdc++ \
+        make \
+        nodejs \
+        python \
+        && \
+    update-ca-certificates
+RUN npm install -g \
+        bower \
+        ember-cli \
+        node-sass-prebuilt \
+        phantomjs-prebuilt
 
 # Configure nginx server for an Ember app
-COPY default.conf /etc/nginx/conf.d/
-# Add setup script to install everything, compile
-#   with ember-cli, then remove all but the
-#   compiled output.
-COPY setup.sh /
+COPY default.conf /nginx/
 
-# Add node user to install local dependencies
 RUN adduser -D -u 1000 node
-# Allow Ember to write output to nginx html directory
-RUN chown -R node /usr/html/
-
-ONBUILD ARG ENVIRONMENT=production
+RUN mkdir /src /html && \
+    chown node /src /html
 WORKDIR /src
-ONBUILD COPY . /src
-ONBUILD RUN sh /setup.sh
-ONBUILD WORKDIR /usr/html/
+USER node
+
+# Copy dependency files for installation and
+# cache the result as a few RUN layers.
+ONBUILD COPY bower.json package.json /src/
+ONBUILD RUN npm install
+ONBUILD RUN bower install
+# Copy the whole app now for compilation
+ONBUILD COPY . /src/
+# Set the environment used when building the app
+ONBUILD ARG ENVIRONMENT=production
+# Compile and place distributable files in /html
+ONBUILD RUN ember build \
+                --environment "$ENVIRONMENT" \
+                --output-path /html
