@@ -10,9 +10,10 @@ RUN apk add --no-cache \
         make \
         nodejs \
         python \
+        yarn
         && \
     update-ca-certificates
-RUN npm install -g \
+RUN yarn install -g \
         bower \
         ember-cli \
         node-sass-prebuilt \
@@ -30,7 +31,7 @@ USER node
 # Copy dependency files for installation and
 # cache the result as a few RUN layers.
 ONBUILD COPY bower.json package.json /src/
-ONBUILD RUN npm install
+ONBUILD RUN yarn install
 ONBUILD RUN bower install
 # Copy the whole app now for compilation
 ONBUILD COPY . /src/
