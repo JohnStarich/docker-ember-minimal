@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.6
 
 # Install and update certificates
 RUN apk add --no-cache \
@@ -13,7 +13,7 @@ RUN apk add --no-cache \
         yarn \
         && \
     update-ca-certificates
-RUN yarn install -g \
+RUN yarn global add \
         bower \
         ember-cli \
         node-sass-prebuilt \
