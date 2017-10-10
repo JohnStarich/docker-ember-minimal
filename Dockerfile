@@ -10,7 +10,7 @@ RUN apk add --no-cache \
         make \
         nodejs \
         python \
-        yarn
+        yarn \
         && \
     update-ca-certificates
 RUN yarn install -g \
