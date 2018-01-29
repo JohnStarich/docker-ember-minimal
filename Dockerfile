@@ -30,9 +30,9 @@ USER node
 
 # Copy dependency files for installation and
 # cache the result as a few RUN layers.
-ONBUILD COPY bower.json package.json /src/
+ONBUILD COPY *.json *.lock /src/
 ONBUILD RUN yarn install
-ONBUILD RUN bower install
+ONBUILD RUN [[ ! -e bower.json ]] || bower install
 # Copy the whole app now for compilation
 ONBUILD COPY . /src/
 # Set the environment used when building the app
