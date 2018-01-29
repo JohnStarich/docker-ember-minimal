@@ -5,7 +5,7 @@ Ember Minimal is a base image for Ember.js apps that automatically compiles the 
 ```dockerfile
 # Recommended Dockerfile format for projects that use this image
 # Build the ember app using ONBUILD triggers:
-FROM johnstarich/ember-minimal:2.0 as builder
+FROM johnstarich/ember-minimal:latest as builder
 
 # Begin an nginx image and copy the compiled output from the previous layer
 FROM nginx
@@ -26,7 +26,7 @@ The primary way to change how your Ember app should be built is by changing the 
 
 I've provided a working nginx config in `/nginx` that can be used as described in the quickstart guide. To configure nginx beyond the provided defaults, you can place additional configuration files into `/etc/nginx/conf.d/`.
 
-### Deprecation Note
+### Version 1.2 Deprecation Note
 
 If you prefer to use a single FROM statement that builds and runs the app, follow the [old quickstart guide][] from version 1.2.
 
