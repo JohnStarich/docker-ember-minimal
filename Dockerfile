@@ -9,6 +9,7 @@ RUN apk add --no-cache \
         libstdc++ \
         make \
         nodejs \
+        nodejs-npm \
         python \
         yarn \
         && \
@@ -31,7 +32,12 @@ USER node
 # Copy dependency files for installation and
 # cache the result as a few RUN layers.
 ONBUILD COPY *.json *.lock /src/
-ONBUILD RUN yarn install
+ONBUILD RUN set -ex; \
+            if [[ -e package-lock.json && ! -e yarn.lock ]]; then \
+                npm install; \
+            else \
+                yarn install; \
+            fi
 ONBUILD RUN [[ ! -e bower.json ]] || bower install
 # Copy the whole app now for compilation
 ONBUILD COPY . /src/
